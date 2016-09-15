@@ -22,6 +22,7 @@ public class UI extends Application {
 	Page requestedPage = new Page();
 	TextField wikiTextEntry;
 	TextArea textArea;
+    String Test = "test";
     Button submit, userButton, revButton;
     Text actiontarget, actionTitle, actionRedirect, sceneTitle;
     ScrollPane dataWindow;
