@@ -87,7 +87,12 @@ public class UI extends Application {
           	if (titleToQuery.equals("")) {
           		actiontarget.setFill(Color.FIREBRICK);
 	      		actiontarget.setText("INVALID INPUT");
-          	}else{
+          	}
+          	else if(false){
+                actiontarget.setFill(Color.FIREBRICK);
+                actiontarget.setText("CANNOT FIND PAGE. Check your internet connection, or see if you have typed in the wrong page.");
+            }
+          	else{
 	        	wikiTextEntry.setText("");
 	        	
 	          	requestedPage.query(titleToQuery);

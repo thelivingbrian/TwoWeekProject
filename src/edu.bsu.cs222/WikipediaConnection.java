@@ -55,7 +55,7 @@ public class WikipediaConnection {
 			URL = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=xml&rvprop=timestamp%7Ccomment%7Cuser&rvlimit=30&titles=" + encodedTitle +"&redirects=";
 		}
 		catch (UnsupportedEncodingException e) {
-			
+
 		}
 		finally {
 			return URL;
