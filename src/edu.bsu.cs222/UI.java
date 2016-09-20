@@ -18,14 +18,13 @@ import javafx.stage.Stage;
 
 public class UI extends Application {
 
-	String titleToQuery = "";
-	Page requestedPage = new Page();
-	TextField wikiTextEntry;
-	TextArea textArea;
-    String Test = "test";
-    Button submit, userButton, revButton;
-    Text actiontarget, actionTitle, actionRedirect, sceneTitle;
-    ScrollPane dataWindow;
+	private String titleToQuery = "";
+	private Page requestedPage = new Page();
+	private TextField wikiTextEntry;
+	private TextArea textArea;
+    private Button submit, userButton, revButton;
+    private Text actiontarget, actionTitle, actionRedirect, sceneTitle;
+    private ScrollPane dataWindow;
 	
 	public static void main(String[] args) {
         launch(args);
@@ -72,13 +71,13 @@ public class UI extends Application {
 	    primaryStage.show();
     }
 
-	public void connectCode() {
+	private void connectCode() {
 		userButton.setOnAction(e -> buttonClick(e));
 		revButton.setOnAction(e -> buttonClick(e));
 		submit.setOnAction(e -> buttonClick(e));		
 	}
 	
-	public void buttonClick(ActionEvent e)
+	private void buttonClick(ActionEvent e)
     {
 	    
         Formatter formatter;
@@ -114,7 +113,7 @@ public class UI extends Application {
         }
     }
 
-	public void setWidths() {
+	private void setWidths() {
 		dataWindow.setPrefWidth(700);
 	}
 }
