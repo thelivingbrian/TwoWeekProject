@@ -42,8 +42,7 @@ public class WikipediaConnection {
 	private URLConnection connectToWikipedia(String title) throws IOException {
 		URL url = new URL(createURL(title));
 		URLConnection connection = url.openConnection();
-		connection.setRequestProperty("User-Agent",
-				"CS222TwoWeekProject/0.1 (http://www.cs.bsu.edu/homepages/pvg/courses/cs222Fa15/#!/two-week-project; pvgestwicki@bsu.edu)");
+		connection.setRequestProperty("User-Agent", "Revision Tracker/0.1 (http://www.cs.bsu.edu/~pvg/courses/cs222Fa16; btlynch@bsu.edu)");
 		connection.connect();
 		return connection;
 	}

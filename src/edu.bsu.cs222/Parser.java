@@ -51,10 +51,11 @@ public class Parser {
 			String timestamp = e.getAttribute("timestamp");
 	        Timestamp ts = Timestamp.valueOf(formatTS(timestamp));
 
-			Revision revision = new Revision();
-			revision.setAuthor(authorName);
-			revision.setComment(comment);
-			revision.setTS(ts);			
+			//Revision.RevisionBuilder builder new Revision.RevisionBuilder();
+			Revision revision = new Revision.RevisionBuilder().author(e.getAttribute("user")).comment(e.getAttribute("comment")).timestamp(ts).build();
+			//revision.setAuthor(authorName);
+			//revision.setComment(comment);
+			//revision.setTS(ts);
 			setOfRevisions[i] = revision;
 		}
 	}
