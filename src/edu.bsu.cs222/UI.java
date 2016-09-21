@@ -18,13 +18,13 @@ import javafx.stage.Stage;
 
 public class UI extends Application {
 
-	String titleToQuery = "";
-	Page requestedPage = new Page();
-	TextField wikiTextEntry;
-	TextArea textArea;
-    Button submit, userButton, revButton;
-    Text actiontarget, actionTitle, actionRedirect, sceneTitle;
-    ScrollPane dataWindow;
+	private String titleToQuery = "";
+	private Page requestedPage = new Page();
+    private TextField wikiTextEntry;
+    private TextArea textArea;
+    private Button submit, userButton, revButton;
+    private Text actiontarget, actionTitle, actionRedirect, sceneTitle;
+    private ScrollPane dataWindow;
 	
 	public static void main(String[] args) {
         launch(args);
@@ -50,6 +50,7 @@ public class UI extends Application {
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
         actiontarget = new Text();
         textArea = new TextArea();
+        textArea.setEditable(false);
         dataWindow.setContent(textArea);
         dataWindow.setFitToWidth(true);
         
@@ -87,7 +88,12 @@ public class UI extends Application {
           	if (titleToQuery.equals("")) {
           		actiontarget.setFill(Color.FIREBRICK);
 	      		actiontarget.setText("INVALID INPUT");
-          	}else{
+          	}
+          	else if(false){
+                actiontarget.setFill(Color.FIREBRICK);
+                actiontarget.setText("CANNOT FIND PAGE. Check your internet connection, or see if you have typed in the wrong page.");
+            }
+          	else{
 	        	wikiTextEntry.setText("");
 	        	
 	          	requestedPage.query(titleToQuery);
