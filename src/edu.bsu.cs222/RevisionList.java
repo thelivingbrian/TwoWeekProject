@@ -4,9 +4,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * Created by brian on 9/21/2016.
- */
 public class RevisionList {
     private final int REVISIONS_WANTED = 10;
     private int numOfRevs;
@@ -28,7 +25,7 @@ public class RevisionList {
         setOfRevisions = new Revision[numOfRevs];
     }
 
-    public void parseRevisions(){
+    private void parseRevisions(){
         for(int i=0; i<numOfRevs; i++){
             Node node = revisionNodeList.item(i);
             Element e = (Element)node;
@@ -40,11 +37,7 @@ public class RevisionList {
         return new Revision.RevisionBuilder().buildFromElement(e).build();
     }
 
-    public Revision revisionAtIndex(int index) {
-        return setOfRevisions[index];
-    }
+    public Revision revisionAtIndex(int index) { return setOfRevisions[index]; }
 
-    public int getNumOfRevs() {
-        return numOfRevs;
-    }
+    public int getNumOfRevs() { return numOfRevs; }
 }

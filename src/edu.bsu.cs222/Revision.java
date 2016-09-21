@@ -2,12 +2,9 @@ package edu.bsu.cs222;
 
 import org.w3c.dom.Element;
 
-import java.sql.Timestamp;
-
 public class Revision {
 	
-	private String author, comment, timestampString;
-	private Timestamp whenRevised;
+	private String author, comment;
 	private WikiTimestamp wikiTS;
 	
 	public Revision(RevisionBuilder builder) {
@@ -24,23 +21,13 @@ public class Revision {
 		return comment;
 	}
 
-	public String getReadableTS() {
-		return wikiTS.getReadable();
-	}
-	
-	public Timestamp getTimestamp() {
-		return whenRevised;
-	}
+	public String getReadableTS() {	return wikiTS.getReadable(); }
 
 
 	public static class RevisionBuilder {
-		private String author, comment, timestampString;
+		private String author, comment;
 		private WikiTimestamp wikiTS;
-		//private Timestamp timestamp;
 
-		public RevisionBuilder author(String author){ this.author = author; return this; }
-		public RevisionBuilder comment(String comment){ this.comment = comment; return this; }
-		public RevisionBuilder timestamp(String ts){ this.wikiTS = new WikiTimestamp(ts); return this; }
 		public RevisionBuilder buildFromElement(Element e) {
 			this.author = e.getAttribute("user");
 			this.comment = e.getAttribute("comment");

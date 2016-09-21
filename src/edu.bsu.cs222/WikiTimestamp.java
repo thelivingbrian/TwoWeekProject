@@ -2,12 +2,8 @@ package edu.bsu.cs222;
 
 import java.sql.Timestamp;
 
-/**
- * Created by brian on 9/20/2016.
- */
 public class WikiTimestamp {
-
-    private String unformatted, readable;
+    private String readable;
     private Timestamp timestamp;
 
     public WikiTimestamp(String unformattedTS) {
@@ -19,6 +15,7 @@ public class WikiTimestamp {
         return readable;
     }
 
+    //The Wikipedia timestamp format includes 2 undesired characters when we need them to be spaces instead
     private String removeExtraChars(String ts){
         char[] chars = ts.toCharArray();
         chars[10] = ' ';
