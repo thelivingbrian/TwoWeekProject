@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 public class UI extends Application {
 
 	private String titleToQuery = "";
-	private Page requestedPage = new Page();
+	private Query requestedPage = new Query();
     private TextField wikiTextEntry;
     private TextArea textArea;
     private Button submit, userButton, revButton;
@@ -95,12 +95,12 @@ public class UI extends Application {
             }
           	else{
 	        	wikiTextEntry.setText("");
-	        	
+                actiontarget.setText("Query sent");
 	          	requestedPage.query(titleToQuery);
 	      		formatter = new Formatter(requestedPage);
 	        	
 	      		actiontarget.setFill(Color.FIREBRICK);
-	      		actiontarget.setText("Query sent");
+
 	      		actionTitle.setText(formatter.makeTitle());
 	      		textArea.setText(formatter.makeData());
           	}

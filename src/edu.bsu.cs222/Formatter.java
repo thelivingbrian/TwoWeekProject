@@ -4,10 +4,10 @@ import java.sql.Timestamp;
 
 public class Formatter {
 
-	private Page wikipage;
+	private Query wikipage;
 	
-	public Formatter(Page page){
-		wikipage=page;
+	public Formatter(Query query){
+		wikipage= query;
 	}
 	
 	public String makeTitle(){

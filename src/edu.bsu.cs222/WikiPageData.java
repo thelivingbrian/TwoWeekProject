@@ -6,7 +6,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class Parser {
+public class WikiPageData {
 
 	private final int REVISIONS_WANTED = 10;
 
@@ -16,7 +16,7 @@ public class Parser {
 	private int numOfRevs;
 	private Revision[] setOfRevisions;
 	
-	public Parser(Document doc){		
+	public WikiPageData(Document doc){
 		wikiDoc=doc;
 		setNumOfRevs();
 		parseTitle();

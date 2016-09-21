@@ -1,24 +1,24 @@
 package edu.bsu.cs222;
 
-public class Page {
+public class Query {
 
 	private String title, queryTitle;
 	private boolean wasRedirected;
 	private Revision[] setOfRevisions;
 	private WikipediaConnection wiki;
-	private Parser parser;
+	private WikiPageData wikiPageData;
 	
-	public Page(){
+	//public Query(){
 				
-	}
+	//}
 	
 	public void query(String query){
 		this.queryTitle = query;
 		this.wiki = new WikipediaConnection(query);
-		this.parser = new Parser(wiki.getXML());
-		this.wasRedirected = parser.redirected();
-		this.title = parser.getTitle();
-		this.setOfRevisions = parser.revisionArray();
+		this.wikiPageData = new WikiPageData(wiki.getXML());
+		this.wasRedirected = wikiPageData.redirected();
+		this.title = wikiPageData.getTitle();
+		this.setOfRevisions = wikiPageData.revisionArray();
 	}
 	
 	public Revision revAtIndex(int i){
