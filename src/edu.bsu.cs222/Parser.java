@@ -43,19 +43,20 @@ public class Parser {
 		this.setOfRevisions = new Revision[numOfRevs];
 		
 		for(int i=0; i<numOfRevs; i++){
-
 			Node node = revisionTagList.item(i);
 			Element e = (Element)node;
-			String authorName = e.getAttribute("user");
-			String comment = e.getAttribute("comment");
+
+			// TODO - ask Prof. G if declaring variables is cleaner than using builder as is
+			//String authorName = e.getAttribute("user");
+			//String comment = e.getAttribute("comment");
+
 			String timestamp = e.getAttribute("timestamp");
 	        Timestamp ts = Timestamp.valueOf(formatTS(timestamp));
-
-			//Revision.RevisionBuilder builder new Revision.RevisionBuilder();
-			Revision revision = new Revision.RevisionBuilder().author(e.getAttribute("user")).comment(e.getAttribute("comment")).timestamp(ts).build();
-			//revision.setAuthor(authorName);
-			//revision.setComment(comment);
-			//revision.setTS(ts);
+			Revision revision = new Revision.RevisionBuilder()
+					.author(e.getAttribute("user"))
+					.comment(e.getAttribute("comment"))
+					.timestamp(ts)
+					.build();
 			setOfRevisions[i] = revision;
 		}
 	}
