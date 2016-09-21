@@ -4,26 +4,29 @@ import java.sql.Timestamp;
 
 public class Formatter {
 
-	private Query wikipage;
+	private Query wikiQuery;
+	private WikiPageData wikiPage;
 	
 	public Formatter(Query query){
-		wikipage= query;
+		this.wikiQuery = query;
+		this.wikiPage = wikiQuery.getPageData();
 	}
 	
 	public String makeTitle(){
 		String titleLine = "Showing results for ";
-		titleLine += wikipage.getTitle();
-		if (wikipage.redirectStatus()){
-			titleLine += " - Redirected from '" + wikipage.getQuery() + "'";
+		titleLine += wikiQuery.getTitle();
+		if (wikiQuery.wasRedirected()){
+			titleLine += " - Redirected from '" + wikiQuery.getQuery() + "'";
 		}
 		return titleLine;
 	}
 	
 	public String makeData(){
 		String output = "";
-		for(int i=0; i< wikipage.numOfRevisions(); i++){
-			output+= "Revised on " + readableTS(wikipage.revAtIndex(i).getTimestamp()) + " by " + wikipage.revAtIndex(i).getAuthor() 
-					+ ".\n\tcomment:\t"	+ wikipage.revAtIndex(i).getComment() + "\n\n";
+		for(int i = 0; i< wikiPage.getNumOfRevs(); i++){
+			Revision revision = wikiPage.revAtIndex(i);
+			output += "Revised on " + revision.getReadableTS() + " by " + revision.getAuthor()
+					+ ".\n\tcomment:\t"	+ revision.getComment() + "\n\n";
 		}
 		return output;
 	}
@@ -31,8 +34,8 @@ public class Formatter {
 	public String makeUserAnalysis(){
 		String output = "User Analysis:\n\n";
 		UserList list = new UserList();
-		for(int i=1; i<wikipage.numOfRevisions(); i++){
-			list.place(wikipage.revAtIndex(i).getAuthor());
+		for(int i = 1; i< wikiPage.getNumOfRevs(); i++){
+			list.place(wikiPage.revAtIndex(i).getAuthor());
 		}
 		list.sort();
 		for(int i=0; i<list.contributors(); i++){

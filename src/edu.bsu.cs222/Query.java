@@ -3,26 +3,27 @@ package edu.bsu.cs222;
 public class Query {
 
 	private String title, queryTitle;
-	private boolean wasRedirected;
+	private boolean redirectStatus;
 	private Revision[] setOfRevisions;
 	private WikipediaConnection wiki;
-	private WikiPageData wikiPageData;
+	private WikiPageData wikiPage;
 	
 	//public Query(){
 				
 	//}
 	
-	public void query(String query){
+	public Query(String query){
 		this.queryTitle = query;
 		this.wiki = new WikipediaConnection(query);
-		this.wikiPageData = new WikiPageData(wiki.getXML());
-		this.wasRedirected = wikiPageData.redirected();
-		this.title = wikiPageData.getTitle();
-		this.setOfRevisions = wikiPageData.revisionArray();
+		this.wikiPage = new WikiPageData.WikiPageBuilder( wiki.getXML() ).build();
+		this.redirectStatus = wikiPage.checkRedirect();
+		this.title = wikiPage.pageTitle();
 	}
-	
-	public Revision revAtIndex(int i){
-		return setOfRevisions[i];
+
+	public boolean wasRedirected(){ return this.redirectStatus; }
+	/*
+	public Revision revisionNumber(int i){
+		return wikiPage.revAtIndex(i);  //setOfRevisions[i];
 	}
 	
 	public int numOfRevisions(){
@@ -30,15 +31,14 @@ public class Query {
 	}
 	
 	public boolean redirectStatus(){
-		return wasRedirected;
+		return checkRedirect;
 	}
-	
-	public String getTitle(){
-		return title;
-	}
+	*/
+	public String getTitle(){ return title; }
 	
 	public String getQuery(){
 		return queryTitle;
 	}
-	
+
+	public WikiPageData getPageData() { return wikiPage; }
 }

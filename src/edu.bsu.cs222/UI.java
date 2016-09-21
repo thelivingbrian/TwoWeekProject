@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 public class UI extends Application {
 
 	private String titleToQuery = "";
-	private Query requestedPage = new Query();
+	private Query request;
     private TextField wikiTextEntry;
     private TextArea textArea;
     private Button submit, userButton, revButton;
@@ -85,7 +85,8 @@ public class UI extends Application {
         
 	    if(e.getSource()==submit){
         	titleToQuery = wikiTextEntry.getText();
-          	if (titleToQuery.equals("")) {
+          	request = new Query(titleToQuery);
+            if (titleToQuery.equals("")) {
           		actiontarget.setFill(Color.FIREBRICK);
 	      		actiontarget.setText("INVALID INPUT");
           	}
@@ -96,8 +97,8 @@ public class UI extends Application {
           	else{
 	        	wikiTextEntry.setText("");
                 actiontarget.setText("Query sent");
-	          	requestedPage.query(titleToQuery);
-	      		formatter = new Formatter(requestedPage);
+	          	//request.query(titleToQuery);
+	      		formatter = new Formatter(request);
 	        	
 	      		actiontarget.setFill(Color.FIREBRICK);
 
@@ -106,13 +107,13 @@ public class UI extends Application {
           	}
         }
         if(e.getSource()==userButton){
-        	formatter = new Formatter(requestedPage);
+        	formatter = new Formatter(request);
         	actiontarget.setFill(Color.FIREBRICK);
       		actiontarget.setText("Most active contributors");
       		textArea.setText(formatter.makeUserAnalysis());
         }
         if(e.getSource()==revButton){
-        	formatter = new Formatter(requestedPage);
+        	formatter = new Formatter(request);
         	actiontarget.setFill(Color.FIREBRICK);
       		actiontarget.setText("Most recent revisions");
       		textArea.setText(formatter.makeData());
