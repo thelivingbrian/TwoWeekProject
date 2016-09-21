@@ -8,14 +8,17 @@ import org.w3c.dom.NodeList;
 
 public class Parser {
 
+	private final int REVISIONS_WANTED = 10;
+
 	private Document wikiDoc;
 	private String title;
 	private boolean wasRedirected;
-	private int numOfRevs = 30;
+	private int numOfRevs;
 	private Revision[] setOfRevisions;
 	
 	public Parser(Document doc){		
 		wikiDoc=doc;
+		setNumOfRevs();
 		parseTitle();
 		parseRedirect();
 		parseRevisions();
@@ -33,44 +36,44 @@ public class Parser {
 		wasRedirected = (redirectsTagList.getLength()>0);
 	}
 
-	public void parseRevisions(){	
+	public void parseRevisions(){
 		NodeList revisionTagList = wikiDoc.getElementsByTagName("rev");
-		
-		if (revisionTagList.getLength()<=30){
-			numOfRevs = revisionTagList.getLength();
-		}
-		
-		this.setOfRevisions = new Revision[numOfRevs];
-		
 		for(int i=0; i<numOfRevs; i++){
 			Node node = revisionTagList.item(i);
 			Element e = (Element)node;
-
-			// TODO - ask Prof. G if declaring variables is cleaner than using builder as is
-			//String authorName = e.getAttribute("user");
-			//String comment = e.getAttribute("comment");
-
-			String timestamp = e.getAttribute("timestamp");
-	        Timestamp ts = Timestamp.valueOf(formatTS(timestamp));
-			Revision revision = new Revision.RevisionBuilder()
-					.author(e.getAttribute("user"))
-					.comment(e.getAttribute("comment"))
-					.timestamp(ts)
-					.build();
-			setOfRevisions[i] = revision;
+			setOfRevisions[i] = makeRevision(e);
 		}
 	}
-	
+
+	private Revision makeRevision(Element e) {
+		// TODO - ask Prof. G if declaring variables is cleaner than using builder as is
+		//String authorName = e.getAttribute("user");
+		//String comment = e.getAttribute("comment");
+		String timestamp = e.getAttribute("timestamp");
+		Timestamp ts = Timestamp.valueOf(formatTS(timestamp));
+		return new Revision.RevisionBuilder()
+				.author(e.getAttribute("user"))
+				.comment(e.getAttribute("comment"))
+				.timestamp(ts)
+				.build();
+	}
+
+	private void setNumOfRevs() {
+		NodeList revisionTagList = wikiDoc.getElementsByTagName("rev");
+		if (revisionTagList.getLength() <= REVISIONS_WANTED) {
+			numOfRevs = revisionTagList.getLength();
+		} else {
+			numOfRevs = REVISIONS_WANTED;
+		}
+		setOfRevisions = new Revision[numOfRevs];
+	}
+
 	public String formatTS(String ts){
 		char[] chars = ts.toCharArray();
 	    chars[10] = ' ';
 	    chars[19] = ' ';
 	    return new String(chars);
 	}
-	
-	public Document getDoc(){
-		return wikiDoc;
-	}	
 	
 	public String getTitle() {
 		return title;
