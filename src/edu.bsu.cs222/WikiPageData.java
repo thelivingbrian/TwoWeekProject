@@ -8,10 +8,19 @@ import org.w3c.dom.NodeList;
 public class WikiPageData {
 	private Document wikiDoc;
 	private RevisionList revisionList;
+	private Boolean exists;
 	
 	private WikiPageData(WikiPageBuilder builder) {
 		this.wikiDoc = builder.wikiXML;
-		this.revisionList = builder.revisionList;
+		//this.revisionList = builder.revisionList;
+		this.exists = builder.exists;
+		if (exists) {
+			this.revisionList = new RevisionList(wikiDoc.getElementsByTagName("rev"));
+		}
+	}
+
+	public Boolean exists() {
+		return this.exists;
 	}
 
 	public Boolean checkRedirect(){
@@ -33,11 +42,18 @@ public class WikiPageData {
 
 	public static class WikiPageBuilder {
 		private Document wikiXML;
-		private RevisionList revisionList;
+		private boolean exists;
 
 		public WikiPageBuilder(Document wikiXML) {
 			this.wikiXML = wikiXML;
-			this.revisionList = new RevisionList(wikiXML.getElementsByTagName("rev"));
+		}
+
+		public WikiPageBuilder pageExists(){
+			Node node = wikiXML.getElementsByTagName("pages").item(0).getFirstChild();
+			Element e = (Element)node;
+			String pageID = e.getAttribute("_idx");
+			this.exists = ( !(pageID.startsWith("-")) );
+			return this;
 		}
 
 		public WikiPageData build(){

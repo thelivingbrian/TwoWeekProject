@@ -4,15 +4,24 @@ public class Query {
 
 	private String title, queryTitle;
 	private boolean redirectStatus;
-	private WikipediaConnection wiki;
 	private WikiPageData wikiPage;
 	
 	public Query(String query){
 		this.queryTitle = query;
-		this.wiki = new WikipediaConnection(query);
-		this.wikiPage = new WikiPageData.WikiPageBuilder( wiki.getXML() ).build();
+		attemptConnection();
+	}
+
+	public void attemptConnection(){
+		WikipediaConnection wiki = new WikipediaConnection(queryTitle);
+		this.wikiPage = new WikiPageData.WikiPageBuilder( wiki.getXML() ).pageExists().build();
 		this.redirectStatus = wikiPage.checkRedirect();
 		this.title = wikiPage.pageTitle();
+	}
+
+	public boolean wasSuccessful(){
+		if ( queryTitle.equals("") ) { return false; }
+		if ( !(wikiPage.exists()) ) { return false; }
+		else { return true; }
 	}
 
 	public boolean wasRedirected(){ return this.redirectStatus; }

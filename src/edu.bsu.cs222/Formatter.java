@@ -1,35 +1,39 @@
 package edu.bsu.cs222;
 
-import java.sql.Timestamp;
-
 public class Formatter {
 
 	private Query wikiQuery;
 	private WikiPageData wikiPage;
+    private String queryResult, queryData;
 	
 	public Formatter(Query query){
 		this.wikiQuery = query;
-		this.wikiPage = wikiQuery.getPageData();
+		if ( wikiQuery.wasSuccessful() ) {
+            this.wikiPage = wikiQuery.getPageData();
+            formatResult();
+            formatRevData();
+        }
 	}
 	
-	public String makeTitle(){
-		String titleLine = "Showing results for ";
-		titleLine += wikiQuery.getTitle();
-		if (wikiQuery.wasRedirected()){
-			titleLine += " - Redirected from '" + wikiQuery.getQuery() + "'";
-		}
-		return titleLine;
+	public void formatResult(){
+        this.queryResult = "Showing results for " + wikiQuery.getTitle();
+        if ( wikiQuery.wasRedirected() ) {
+            this.queryResult += " - Redirected from '" + wikiQuery.getQuery() + "'";
+        }
 	}
 	
-	public String makeData(){
-		String output = "";
-		for(int i = 0; i< wikiPage.getNumOfRevs(); i++){
+	public void formatRevData(){
+		this.queryData = "";
+		for(int i = 0; i < wikiPage.getNumOfRevs(); i++){
 			Revision revision = wikiPage.getRevNumber(i);
-			output += "Revised on " + revision.getReadableTS() + " by " + revision.getAuthor()
+			this.queryData += "Revised on " + revision.getReadableTS() + " by " + revision.getAuthor()
 					+ ".\n\tcomment:\t"	+ revision.getComment() + "\n\n";
 		}
-		return output;
 	}
+
+	public String getFormattedResult() { return queryResult; }
+
+    public String getFormattedData() { return queryData; }
 	
 	public String makeUserAnalysis(){
 		String output = "User Analysis:\n\n";

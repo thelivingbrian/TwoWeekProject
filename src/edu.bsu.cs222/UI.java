@@ -19,11 +19,11 @@ import javafx.stage.Stage;
 public class UI extends Application {
 
 	private String titleToQuery = "";
-	private Query request;
+	private Query pageRequest;
     private TextField wikiTextEntry;
-    private TextArea textArea;
+    private TextArea outputTextArea;
     private Button submit, userButton, revButton;
-    private Text actiontarget, actionTitle, actionRedirect, sceneTitle;
+    private Text notificationText, resultOfQuery, actionRedirect, sceneTitle;
     private ScrollPane dataWindow;
 	
 	public static void main(String[] args) {
@@ -43,26 +43,26 @@ public class UI extends Application {
         submit = new Button("Submit");
         userButton = new Button("Show users");
         revButton = new Button("Show revisions");
-        actionTitle = new Text();
+        resultOfQuery = new Text();
         actionRedirect = new Text();
         dataWindow = new ScrollPane();
         sceneTitle = new Text("Search Wikipedia For...");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-        actiontarget = new Text();
-        textArea = new TextArea();
-        textArea.setEditable(false);
-        dataWindow.setContent(textArea);
+        notificationText = new Text();
+        outputTextArea = new TextArea();
+        outputTextArea.setEditable(false);
+        dataWindow.setContent(outputTextArea);
         dataWindow.setFitToWidth(true);
         
         grid.add(sceneTitle, 0, 0);
         grid.add(wikiTextEntry, 0, 1, 4, 1);
         grid.add(submit, 4, 1, 2, 1);
-        grid.add(actionTitle, 0, 3);
+        grid.add(resultOfQuery, 0, 3);
         grid.add(actionRedirect, 2, 3);
         grid.add(dataWindow, 0, 4, 6, 3);
         grid.add(userButton, 2, 7);
         grid.add(revButton, 4, 7);
-        grid.add(actiontarget, 0, 7);
+        grid.add(notificationText, 0, 7);
 
         setWidths();
         connectCode();
@@ -78,45 +78,38 @@ public class UI extends Application {
 		submit.setOnAction(e -> buttonClick(e));		
 	}
 	
-	public void buttonClick(ActionEvent e)
-    {
-	    
-        Formatter formatter;
-        
+	public void buttonClick(ActionEvent e) {
+	    Formatter formatter;
 	    if(e.getSource()==submit){
         	titleToQuery = wikiTextEntry.getText();
-          	request = new Query(titleToQuery);
-            if (titleToQuery.equals("")) {
-          		actiontarget.setFill(Color.FIREBRICK);
-	      		actiontarget.setText("INVALID INPUT");
-          	}
-          	else if(false){
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("CANNOT FIND PAGE. Check your internet connection, or see if you have typed in the wrong page.");
-            }
-          	else{
-	        	wikiTextEntry.setText("");
-                actiontarget.setText("Query sent");
-	          	//request.query(titleToQuery);
-	      		formatter = new Formatter(request);
-	        	
-	      		actiontarget.setFill(Color.FIREBRICK);
+            wikiTextEntry.setText("");
+            resultOfQuery.setText("");
+            outputTextArea.setText("");
 
-	      		actionTitle.setText(formatter.makeTitle());
-	      		textArea.setText(formatter.makeData());
+            if ( titleToQuery.equals("") ) {
+          		notificationText.setFill(Color.FIREBRICK);
+	      		notificationText.setText("INVALID INPUT");
+          	} else {
+                pageRequest = new Query(titleToQuery);
+                formatter = new Formatter(pageRequest);
+	        	
+	      		notificationText.setFill(Color.FIREBRICK);
+                notificationText.setText("Query sent");
+	      		resultOfQuery.setText(formatter.getFormattedResult());
+	      		outputTextArea.setText(formatter.getFormattedData());
           	}
         }
         if(e.getSource()==userButton){
-        	formatter = new Formatter(request);
-        	actiontarget.setFill(Color.FIREBRICK);
-      		actiontarget.setText("Most active contributors");
-      		textArea.setText(formatter.makeUserAnalysis());
+        	formatter = new Formatter(pageRequest);
+        	notificationText.setFill(Color.FIREBRICK);
+      		notificationText.setText("Most active contributors");
+      		outputTextArea.setText(formatter.makeUserAnalysis());
         }
         if(e.getSource()==revButton){
-        	formatter = new Formatter(request);
-        	actiontarget.setFill(Color.FIREBRICK);
-      		actiontarget.setText("Most recent revisions");
-      		textArea.setText(formatter.makeData());
+        	formatter = new Formatter(pageRequest);
+        	notificationText.setFill(Color.FIREBRICK);
+      		notificationText.setText("Most recent revisions");
+      		outputTextArea.setText(formatter.getFormattedData());
         }
     }
 
