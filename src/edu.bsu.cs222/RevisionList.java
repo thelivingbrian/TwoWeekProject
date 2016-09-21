@@ -37,6 +37,8 @@ public class RevisionList {
         return new Revision.RevisionBuilder().buildFromElement(e).build();
     }
 
+    public Revision[] getArray() { return this.setOfRevisions; }
+
     public Revision revisionAtIndex(int index) { return setOfRevisions[index]; }
 
     public int getNumOfRevs() { return numOfRevs; }

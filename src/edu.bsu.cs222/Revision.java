@@ -6,6 +6,7 @@ public class Revision {
 	
 	private String author, comment;
 	private WikiTimestamp wikiTS;
+	//private Formatter formatter = new Formatter();
 	
 	public Revision(RevisionBuilder builder) {
 		this.author = builder.author;
@@ -22,6 +23,8 @@ public class Revision {
 	}
 
 	public String getReadableTS() {	return wikiTS.getReadable(); }
+
+	//public String getString() { return  formatter.formatRevision(this); }
 
 
 	public static class RevisionBuilder {
