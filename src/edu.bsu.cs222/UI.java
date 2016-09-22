@@ -84,6 +84,7 @@ public class UI extends Application {
         Formatter formatter;
         
 	    if(e.getSource()==submit){
+            wikiTextEntry.setEditable(false);
         	titleToQuery = wikiTextEntry.getText();
           	if (titleToQuery.equals("")) {
           		actiontarget.setFill(Color.FIREBRICK);
@@ -104,6 +105,7 @@ public class UI extends Application {
 	      		actionTitle.setText(formatter.makeTitle());
 	      		textArea.setText(formatter.makeData());
           	}
+          	wikiTextEntry.setEditable(true);
         }
         if(e.getSource()==userButton){
         	formatter = new Formatter(requestedPage);
