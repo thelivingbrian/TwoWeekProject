@@ -20,10 +20,14 @@ public class WikiPageData {
 	}
 
 	public String pageTitle() {
-		NodeList normalizedTagList = wikiDoc.getElementsByTagName("pages");
-		Node node = normalizedTagList.item(0).getFirstChild();
-		Element e = (Element)node;
-		return e.getAttribute("title");
+		try {
+			NodeList normalizedTagList = wikiDoc.getElementsByTagName("pages");
+			Node node = normalizedTagList.item(0).getFirstChild();
+			Element e = (Element) node;
+			return e.getAttribute("title");
+		} catch(NullPointerException e) {
+			return "Page title is invalid";
+		}
 	}
 	
 	public int getNumOfRevs(){ return revisionList.getNumOfRevs(); }
@@ -37,14 +41,19 @@ public class WikiPageData {
 
 	public static class WikiPageBuilder {
 		private Document wikiXML;
-		private boolean exists;
 		private RevisionList revisionList;
 
 		public WikiPageBuilder(Document wikiXML) {
 			this.wikiXML = wikiXML;
-			this.revisionList = new RevisionList(wikiXML.getElementsByTagName("rev"));
 		}
-
+		public WikiPageBuilder wikiRevisions() {
+			this.revisionList = new RevisionList(wikiXML.getElementsByTagName("rev"));
+			return this;
+		}
+		public WikiPageBuilder wikiUser() {
+			this.revisionList = new RevisionList(wikiXML.getElementsByTagName("item"));
+			return this;
+		}
 		public WikiPageData build(){
 			return new WikiPageData(this);
 		}

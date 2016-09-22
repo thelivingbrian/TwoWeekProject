@@ -1,39 +1,74 @@
 package edu.bsu.cs222;
 
-public class Query {
+import java.io.UnsupportedEncodingException;
 
+public class Query {
 	private String title, queryTitle;
 	private boolean wasSuccessful, redirectStatus;
 	private WikiPageData wikiPage;
-	
-	public Query(String query){
-		this.queryTitle = query;
-		attemptConnection();
+
+	private Query(QueryBuilder builder) {
+		this.queryTitle = builder.queryTitle;
+		this.wasSuccessful = builder.wasSuccessful;
+		this.wikiPage = builder.wikiPage;
+		this.title = wikiPage.pageTitle();
+		this.redirectStatus = wikiPage.checkRedirect();
 	}
 
-	private void attemptConnection(){
-		try {
-			WikipediaConnection wiki = new WikipediaConnection(queryTitle);
-			this.wikiPage = new WikiPageData.WikiPageBuilder(wiki.getXML()).build();
-			this.redirectStatus = wikiPage.checkRedirect();
-			this.title = wikiPage.pageTitle();
-			this.wasSuccessful = true;
-		} catch (NullPointerException e) {
-			this.wasSuccessful = false;
-		}
-	}
+	public boolean wasSuccessful() { return this.wasSuccessful; }
 
-	public boolean wasSuccessful(){ return this.wasSuccessful; }
+	public boolean wasRedirected() { return redirectStatus;	}
 
-	public boolean wasRedirected(){ return this.redirectStatus; }
+	public String getTitle() { return title; }
 
-	public String getTitle(){ return title; }
-	
-	public String getQuery(){
+	public String getQuery() {
 		return queryTitle;
 	}
 
-	public WikiPageData getPageData() { return wikiPage; }
+	public RevisionList revisionList() { return wikiPage.getRevisionList(); }
 
-	public RevisionList getRevisions() { return wikiPage.getRevisionList(); }
+	public static class QueryBuilder {
+		private String queryTitle;
+		private boolean wasSuccessful;
+		private WikiPageData wikiPage;
+		private WikiURL wikiURL;
+
+		public QueryBuilder(String input) {
+			this.queryTitle = input;
+		}
+
+		public QueryBuilder revQuery() {
+			try {
+				this.wikiURL = new WikiURL.WikiURLBuilder(queryTitle).revisionURL().build();
+			} catch (UnsupportedEncodingException e) {
+				this.wasSuccessful = false;
+			}
+			revPage();
+			return this;
+		}
+		private void revPage() {
+			WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
+			this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiRevisions().build();
+			this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+		}
+
+		public QueryBuilder userQuery() {
+			try {
+				this.wikiURL = new WikiURL.WikiURLBuilder(queryTitle).userURL().build();
+			} catch (UnsupportedEncodingException e) {
+				this.wasSuccessful = false;
+			}
+			userPage();
+			return this;
+		}
+		public void userPage() {
+			WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
+			this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiUser().build();
+			this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+		}
+
+		public Query build() {
+			return new Query(this);
+		}
+	}
 }

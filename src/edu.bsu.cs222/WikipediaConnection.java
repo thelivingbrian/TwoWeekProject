@@ -17,10 +17,12 @@ import org.xml.sax.SAXException;
 public class WikipediaConnection {
 	
 	private Document XMLResults;
+	private WikiURL wikiURL;
 
-	public WikipediaConnection(String title) {
+	public WikipediaConnection(WikiURL wikiURL) {
+		this.wikiURL = wikiURL;
 		try {
-			URLConnection connection = connectToWikipedia(title);
+			URLConnection connection = wikipediaConnection(wikiURL.getURL());
 			Document document = readXmlDocumentFrom(connection);
 			this.XMLResults = document;
 		}
@@ -33,8 +35,8 @@ public class WikipediaConnection {
 		return XMLResults;
 	}
 
-	private URLConnection connectToWikipedia(String title) throws IOException {
-		URL url = new URL(createURL(title));
+	private URLConnection wikipediaConnection(String address) throws IOException {
+		URL url = new URL(address);
 		URLConnection connection = url.openConnection();
 		connection.setRequestProperty("User-Agent", "Revision Tracker/0.1 (http://www.cs.bsu.edu/~pvg/courses/cs222Fa16; btlynch@bsu.edu)");
 		connection.connect();

@@ -10,6 +10,11 @@ public class RevisionList {
     private Revision[] setOfRevisions;
     private NodeList revisionNodeList;
 
+    public RevisionList(){
+        this.numOfRevs = 0;
+        setOfRevisions = new Revision[0];
+    }
+
     public RevisionList(NodeList xmlRevElements){
         revisionNodeList = xmlRevElements;
         setNumOfRevs();

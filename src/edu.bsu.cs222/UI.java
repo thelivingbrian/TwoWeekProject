@@ -17,11 +17,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class UI extends Application {
 
 	private String titleToQuery = "";
-	private Query requestedPage;
+	private Query query;
     private TextField wikiTextEntry;
     private TextArea outputTextArea;
     private Button submit, userButton, revButton;
@@ -32,7 +33,9 @@ public class UI extends Application {
     private ObservableList<Revision> data = FXCollections.observableArrayList();
     private ListView listview;
     private RevisionList revisions;
+    private Revision selectedItem;
     private VBox outputBox;
+    private Formatter formatter;
 
 	public static void main(String[] args) {
         launch(args);
@@ -49,7 +52,7 @@ public class UI extends Application {
 
         wikiTextEntry = new TextField();
         submit = new Button("Submit");
-        userButton = new Button("Show users");
+        userButton = new Button("Show user");
         revButton = new Button("Show revisions");
         redirectText = new Text();
         actionRedirect = new Text();
@@ -66,12 +69,8 @@ public class UI extends Application {
         revisionWindow.setVisible(false);
 
 
-        //String[] strArr = {"a","b","c"};
-        //ObservableList<Revision> data = FXCollections.observableArrayList();
-        //listview = new ListView<String>(data);
         listview = new ListView<Revision>(data);
-        //data.addAll(revisions.getArray());
-        //listview.setItems(data);
+
         userWindow.getChildren().add(listview);
         userWindow.setVisible(false);
 
@@ -84,8 +83,6 @@ public class UI extends Application {
         grid.add(submit, 4, 1, 2, 1);
         grid.add(redirectText, 0, 3);
         grid.add(actionRedirect, 2, 3);
-        //grid.add(userWindow, 0, 4, 6, 2);
-        //grid.add(revisionWindow, 0, 4, 6, 2);
         grid.add(outputBox, 0, 4, 6, 2);
         grid.add(label, 0, 7, 6, 1);
         grid.add(userButton, 2, 8);
@@ -110,50 +107,74 @@ public class UI extends Application {
 	}
 
     public void changeFocus(MouseEvent e) {
-        Revision selectedItem = (Revision) listview.getSelectionModel().getSelectedItem();
-        label.setText(selectedItem.getComment());
+        selectedItem = (Revision) listview.getSelectionModel().getSelectedItem();
+        label.setText(new Formatter().formatRevision(selectedItem));
     }
 
     public void buttonClick(ActionEvent e) {
-	    Formatter formatter;
-	    if(e.getSource()==submit) {
-        	titleToQuery = wikiTextEntry.getText();
-            requestedPage = new Query(titleToQuery);
-            revisions = requestedPage.getRevisions();
-            formatter = new Formatter(requestedPage);
+	    formatter = new Formatter();
+        titleToQuery = wikiTextEntry.getText();
+        query = new Query.QueryBuilder(titleToQuery).revQuery().build();
+        if(e.getSource()==submit) {
+            getRevisionData(query.revisionList());
+            formatter.formatQuery(query);
 
             clearData();
-            ObservableList<Revision> data = FXCollections.observableArrayList();
-            //listview = new ListView<String>(data);
-
-            data.addAll(revisions.getArray());
-            listview.setItems(data);
 
             resultText.setFill(Color.FIREBRICK);
             resultText.setText(formatter.getQueryResult());
             redirectText.setText(formatter.getQueryRedirect());
-
+            userWindow.setVisible(true);
 
         }
         if(e.getSource()==userButton){
-        	formatter = new Formatter(requestedPage);
-        	resultText.setFill(Color.FIREBRICK);
-      		resultText.setText("Most active contributors");
-      		outputTextArea.setText(formatter.makeUserAnalysis());
+            clearData();
+            Query requestedUser = new Query.QueryBuilder(selectedItem.getAuthor()).userQuery().build();
+            revisions = requestedUser.revisionList();
+            formatter.formatQuery(requestedUser);
+
+            data.setAll(revisions.getArray());
+            listview.setItems(data);
             userWindow.setVisible(true);
-        }
+        } /*
         if(e.getSource()==revButton){
-        	formatter = new Formatter(requestedPage);
+            userWindow.setVisible(false);
+            revisionWindow.setVisible(true);
         	resultText.setFill(Color.FIREBRICK);
       		resultText.setText("Most recent revisions");
-      		outputTextArea.setText(formatter.getFormattedData());
-        }
+        } */
+
+        listview.setCellFactory(new Callback<ListView<Revision>,
+                    ListCell<Revision>>() {
+                @Override
+                public ListCell<Revision> call(ListView<Revision> listview) {
+                    return new TextCell();
+                }
+            }
+        );
+
+    }
+
+
+    private void getRevisionData(RevisionList revisions) {
+        data.addAll(revisions.getArray());
+        listview.setItems(data);
     }
 
     public void clearData() {
         wikiTextEntry.setText("");
         redirectText.setText("");
         outputTextArea.setText("");
+    }
+
+    static class TextCell extends ListCell<Revision> {
+        @Override
+        public void updateItem(Revision item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item != null) {
+                setText("Revised by: \t" + item.getAuthor() + " at " + item.getReadableTS());
+            }
+        }
     }
 
 	public void setWidths() {
