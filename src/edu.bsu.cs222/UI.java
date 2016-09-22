@@ -16,6 +16,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.concurrent.TimeoutException;
+
 public class UI extends Application {
 
 	private String titleToQuery = "";
@@ -94,15 +96,20 @@ public class UI extends Application {
                 actiontarget.setText("CANNOT FIND PAGE. Check your internet connection, or see if you have typed in the wrong page.");
             }
           	else{
-	        	wikiTextEntry.setText("");
-	        	
-	          	requestedPage.query(titleToQuery);
-	      		formatter = new Formatter(requestedPage);
-	        	
-	      		actiontarget.setFill(Color.FIREBRICK);
-	      		actiontarget.setText("Query sent");
-	      		actionTitle.setText(formatter.makeTitle());
-	      		textArea.setText(formatter.makeData());
+                wikiTextEntry.setText("");
+
+                requestedPage.query(titleToQuery);
+                formatter = new Formatter(requestedPage);
+
+                actiontarget.setFill(Color.FIREBRICK);
+                actiontarget.setText("Query sent");
+                actionTitle.setText(formatter.makeTitle());
+                if(formatter.FoundPage()){
+                    textArea.setText(formatter.makeData());
+                }
+                else {
+                    textArea.setText("Cannot connect to page, please check your connection or \nsee that you have typed in the correct page and try again.");
+                }
           	}
         }
         if(e.getSource()==userButton){

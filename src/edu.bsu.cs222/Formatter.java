@@ -63,5 +63,9 @@ public class Formatter {
 		timestamp += hours + ":" + minutes + timeOfDay;
 		return timestamp;
 	}
+
+	public boolean FoundPage(){
+		return wikipage.numOfRevisions() > 0;
+	}
 	
 }
