@@ -3,11 +3,12 @@ package edu.bsu.cs222;
 import java.io.UnsupportedEncodingException;
 
 public class Query {
-	private String title, queryTitle;
+	private String title, queryTitle, sorting;
 	private boolean wasSuccessful, redirectStatus;
 	private WikiPageData wikiPage;
 
 	private Query(QueryBuilder builder) {
+		this.sorting = builder.sorting;
 		this.queryTitle = builder.queryTitle;
 		this.wasSuccessful = builder.wasSuccessful;
 		this.wikiPage = builder.wikiPage;
@@ -25,10 +26,14 @@ public class Query {
 		return queryTitle;
 	}
 
+	public String getSorting() {
+		return sorting;
+	}
+
 	public RevisionList revisionList() { return wikiPage.getRevisionList(); }
 
 	public static class QueryBuilder {
-		private String queryTitle;
+		private String queryTitle, sorting;
 		private boolean wasSuccessful;
 		private WikiPageData wikiPage;
 		private WikiURL wikiURL;
@@ -39,6 +44,7 @@ public class Query {
 
 		public QueryBuilder revQuery() {
 			try {
+				this.sorting = "Title";
 				this.wikiURL = new WikiURL.WikiURLBuilder(queryTitle).revisionURL().build();
 			} catch (UnsupportedEncodingException e) {
 				this.wasSuccessful = false;
@@ -54,6 +60,7 @@ public class Query {
 
 		public QueryBuilder userQuery() {
 			try {
+				this.sorting = "User";
 				this.wikiURL = new WikiURL.WikiURLBuilder(queryTitle).userURL().build();
 			} catch (UnsupportedEncodingException e) {
 				this.wasSuccessful = false;

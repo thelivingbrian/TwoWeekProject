@@ -43,20 +43,6 @@ public class WikipediaConnection {
 		return connection;
 	}
 	
-	public String createURL(String title){
-		String URL = "";
-		try {
-			String encodedTitle = URLEncoder.encode(title, "UTF-8");
-			URL = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=xml&rvprop=timestamp%7Ccomment%7Cuser&rvlimit=30&titles=" + encodedTitle +"&redirects=";
-		}
-		catch (UnsupportedEncodingException e) {
-
-		}
-		finally {
-			return URL;
-		}
-	}
-	
 	private Document readXmlDocumentFrom(URLConnection connection) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();

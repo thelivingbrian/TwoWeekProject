@@ -30,32 +30,24 @@ public class WikiTimestamp {
     @SuppressWarnings("deprecation")
     private String createReadableTS(){
         String ts = "";
-        ts += monthDayYeat() + " at " + hour() + ":" + minutes() + timeOfDay();
-        return ts;
-    }
-
-    private String timeOfDay() {
-        if(isAfterNoon(timestamp.getHours())) { return "p.m.";}
-        else { return "a.m."; }
-    }
-
-    private String monthDayYeat() { return (timestamp.getMonth()+1) + "/" + timestamp.getDate() + "/" + (timestamp.getYear()+1900) ; }
-
-    private String hour() {
-        int hour = timestamp.getHours();
-        if (isAfterNoon(hour)) { hour = hour - 12; }
-        if (hourHandIsOnTwelve(hour)) { hour = 12; }
-        return hour + "";
-    }
-
-    private String minutes() {
+        String timeOfDay = "a.m.";
         String minuteString = "";
+        int hour = timestamp.getHours();
         int minutes = timestamp.getMinutes();
+        ts += (timestamp.getMonth()+1) + "/" + timestamp.getDate() + "/" + (timestamp.getYear()+1900) + " at ";
+        if ( isAfterNoon(hour) ) {
+            hour = hour-12;
+            timeOfDay="p.m.";
+        }
+        if ( hourHandIsOnTwelve(hour) ){
+            hour = 12;
+        }
         if ( notTenPastYet(minutes) ){
-            minuteString += timestamp.getMinutes();
             minuteString += "0";
         }
-        return minuteString;
+        minuteString += timestamp.getMinutes();
+        ts += hour + ":" + minuteString + timeOfDay;
+        return ts;
     }
 
     private boolean isAfterNoon(int hour) { return(hour >= 12); }

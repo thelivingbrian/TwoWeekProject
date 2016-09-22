@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -19,23 +20,25 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.swing.*;
+
 public class UI extends Application {
 
-	private String titleToQuery = "";
-	private Query query;
+
+	//private Query query;
     private TextField wikiTextEntry;
-    private TextArea outputTextArea;
-    private Button submit, userButton, revButton;
-    private Text resultText, redirectText, actionRedirect, sceneTitle;
+    //private JFrame frame;
+    private Button submitButton, switchButton;
+    private Text statusText, redirectText, sceneTitle;
     private Label label;
-    private ScrollPane revisionWindow;
 	private StackPane userWindow;
     private ObservableList<Revision> data = FXCollections.observableArrayList();
     private ListView listview;
-    private RevisionList revisions;
+    //private RevisionList revisions;
     private Revision selectedItem;
     private VBox outputBox;
     private Formatter formatter;
+    private String previousTitle;
 
 	public static void main(String[] args) {
         launch(args);
@@ -51,26 +54,20 @@ public class UI extends Application {
         grid.setPadding(new Insets(5, 5, 5, 5));
 
         wikiTextEntry = new TextField();
-        submit = new Button("Submit");
-        userButton = new Button("Show user");
-        revButton = new Button("Show revisions");
+        submitButton = new Button("Search");
+
+        switchButton = new Button("Show user");
+        switchButton.setDisable(true);
+
+
         redirectText = new Text();
-        actionRedirect = new Text();
-        //userWindow = new ScrollPane();
         userWindow = new StackPane();
         sceneTitle = new Text("Search Wikipedia For...");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-        resultText = new Text();
-        outputTextArea = new TextArea();
-        outputTextArea.setEditable(false);
-        label = new Label("Hi");
-        revisionWindow = new ScrollPane();
-        revisionWindow.setContent(outputTextArea);
-        revisionWindow.setVisible(false);
-
+        statusText = new Text();
+        label = new Label("");
 
         listview = new ListView<Revision>(data);
-
         userWindow.getChildren().add(listview);
         userWindow.setVisible(false);
 
@@ -78,16 +75,14 @@ public class UI extends Application {
         outputBox.getChildren().addAll(userWindow);
 
 
-        grid.add(sceneTitle, 0, 0);
-        grid.add(wikiTextEntry, 0, 1, 4, 1);
-        grid.add(submit, 4, 1, 2, 1);
-        grid.add(redirectText, 0, 3);
-        grid.add(actionRedirect, 2, 3);
-        grid.add(outputBox, 0, 4, 6, 2);
-        grid.add(label, 0, 7, 6, 1);
-        grid.add(userButton, 2, 8);
-        grid.add(revButton, 4, 8);
-        grid.add(resultText, 0, 8);
+        grid.add(sceneTitle, 0, 7);
+        grid.add(wikiTextEntry, 0, 8, 6, 1);
+        grid.add(submitButton, 6, 8, 2, 1);
+        grid.add(redirectText, 0, 0);
+        grid.add(outputBox, 0, 3, 8, 4);
+        grid.add(label, 0, 1, 8, 2);
+        grid.add(switchButton, 8, 8);
+        grid.add(statusText, 5, 7);
 
         setWidths();
         connectCode();
@@ -97,52 +92,55 @@ public class UI extends Application {
 	    primaryStage.show();
     }
 
-	public void connectCode() {
-		userButton.setOnAction(e -> buttonClick(e));
-		revButton.setOnAction(e -> buttonClick(e));
-		submit.setOnAction(e -> buttonClick(e));
+    private void newVBox() {
+        outputBox = new VBox();
+    }
 
+    public void connectCode() {
+		switchButton.setOnAction(e -> buttonClick(e));
+		submitButton.setOnAction(e -> buttonClick(e));
         listview.setOnMousePressed(e -> changeFocus(e));
-
+        wikiTextEntry.setOnKeyReleased(e -> enableSearch(e));
 	}
+
+    private void enableSearch(KeyEvent e) {
+        submitButton.setDisable(false);
+        //submitButton.requestFocus();
+    }
 
     public void changeFocus(MouseEvent e) {
         selectedItem = (Revision) listview.getSelectionModel().getSelectedItem();
         label.setText(new Formatter().formatRevision(selectedItem));
+        switchButton.setDisable(false);
     }
 
     public void buttonClick(ActionEvent e) {
 	    formatter = new Formatter();
-        titleToQuery = wikiTextEntry.getText();
-        query = new Query.QueryBuilder(titleToQuery).revQuery().build();
-        if(e.getSource()==submit) {
-            getRevisionData(query.revisionList());
+        if(e.getSource()== submitButton) {
+            String titleToQuery = wikiTextEntry.getText();
+            previousTitle = titleToQuery;
+            Query query = new Query.QueryBuilder(titleToQuery).revQuery().build();
             formatter.formatQuery(query);
-
             clearData();
-
-            resultText.setFill(Color.FIREBRICK);
-            resultText.setText(formatter.getQueryResult());
-            redirectText.setText(formatter.getQueryRedirect());
+            setStatusText(formatter.getQueryResult());
+            setRedirectText(formatter.getQueryRedirect());
+            setRevisionData(query);
+            submitButton.setDisable(true);
+            switchButton.setText("Show user");
             userWindow.setVisible(true);
+        }
+        if(e.getSource()== switchButton){
+
+            if (query.getSorting().equals("Title")) {
+                switchToUser();
+                switchButton.setText("Show page");
+                switchButton.setDisable(true);
+            } else {
+                switchToTitle();
+                switchButton.setText("Show user");
+            }
 
         }
-        if(e.getSource()==userButton){
-            clearData();
-            Query requestedUser = new Query.QueryBuilder(selectedItem.getAuthor()).userQuery().build();
-            revisions = requestedUser.revisionList();
-            formatter.formatQuery(requestedUser);
-
-            data.setAll(revisions.getArray());
-            listview.setItems(data);
-            userWindow.setVisible(true);
-        } /*
-        if(e.getSource()==revButton){
-            userWindow.setVisible(false);
-            revisionWindow.setVisible(true);
-        	resultText.setFill(Color.FIREBRICK);
-      		resultText.setText("Most recent revisions");
-        } */
 
         listview.setCellFactory(new Callback<ListView<Revision>,
                     ListCell<Revision>>() {
@@ -156,15 +154,43 @@ public class UI extends Application {
     }
 
 
-    private void getRevisionData(RevisionList revisions) {
-        data.addAll(revisions.getArray());
-        listview.setItems(data);
+    private void switchToUser() {
+        Query requestedUser = new Query.QueryBuilder(selectedItem.getAuthor()).userQuery().build();
+        formatter.formatQuery(requestedUser);
+        setRedirectText("Showing revisions made by:  " + selectedItem.getAuthor() + ".");
+        setRevisionData(requestedUser);
     }
+
+    private void switchToTitle() {
+        //formatter = new Formatter();
+        Query requestedPage = new Query.QueryBuilder(selectedItem.getTitle()).revQuery().build();
+        formatter.formatQuery(requestedPage);
+        setStatusText(formatter.getQueryResult());
+        setRedirectText(formatter.getQueryRedirect());
+        setRevisionData(requestedPage);
+    }
+
 
     public void clearData() {
         wikiTextEntry.setText("");
         redirectText.setText("");
-        outputTextArea.setText("");
+        label.setText("");
+        newVBox();
+    }
+    private void setRevisionData(Query query) {
+        RevisionList revisions = query.revisionList();
+        data.setAll(revisions.getArray());
+        listview.setItems(data);
+    }
+
+    public void setStatusText(String status) {
+        statusText.setFill(Color.FIREBRICK);
+        statusText.setText(status);
+    }
+
+    public void setRedirectText(String redirectText) {
+        this.redirectText.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        this.redirectText.setText( redirectText );
     }
 
     static class TextCell extends ListCell<Revision> {
@@ -172,7 +198,7 @@ public class UI extends Application {
         public void updateItem(Revision item, boolean empty) {
             super.updateItem(item, empty);
             if (item != null) {
-                setText("Revised by: \t" + item.getAuthor() + " at " + item.getReadableTS());
+                setText("Revision by: \t" + item.getAuthor() + " at " + item.getReadableTS());
             }
         }
     }
