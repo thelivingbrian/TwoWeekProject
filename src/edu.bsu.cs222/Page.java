@@ -1,5 +1,7 @@
 package edu.bsu.cs222;
 
+import java.io.IOException;
+
 public class Page {
 
 	private String title, queryTitle;
@@ -12,7 +14,7 @@ public class Page {
 				
 	}
 	
-	public void query(String query){
+	public void query(String query) throws IOException {
 		this.queryTitle = query;
 		this.wiki = new WikipediaConnection(query);
 		this.parser = new Parser(wiki.getXML());

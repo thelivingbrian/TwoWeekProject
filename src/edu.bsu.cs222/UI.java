@@ -16,6 +16,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class UI extends Application {
@@ -80,8 +81,7 @@ public class UI extends Application {
 		submit.setOnAction(e -> buttonClick(e));		
 	}
 	
-	public void buttonClick(ActionEvent e)
-    {
+	public void buttonClick(ActionEvent e){
 	    
         Formatter formatter;
         
@@ -91,24 +91,24 @@ public class UI extends Application {
           		actiontarget.setFill(Color.FIREBRICK);
 	      		actiontarget.setText("INVALID INPUT");
           	}
-          	else if(false){
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("CANNOT FIND PAGE. Check your internet connection, or see if you have typed in the wrong page.");
-            }
           	else{
-                wikiTextEntry.setText("");
+                try {
+                    wikiTextEntry.setText("");
 
-                requestedPage.query(titleToQuery);
-                formatter = new Formatter(requestedPage);
+                    requestedPage.query(titleToQuery);
+                    formatter = new Formatter(requestedPage);
 
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("Query sent");
-                actionTitle.setText(formatter.makeTitle());
-                if(formatter.FoundPage()){
-                    textArea.setText(formatter.makeData());
+                    actiontarget.setFill(Color.FIREBRICK);
+                    actiontarget.setText("Query sent");
+                    actionTitle.setText(formatter.makeTitle());
+                    if (formatter.FoundPage()) {
+                        textArea.setText(formatter.makeData());
+                    } else {
+                        textArea.setText("Page does not exist. Please check to see if you have the right page\nand try again.");
+                    }
                 }
-                else {
-                    textArea.setText("Cannot connect to page, please check your connection or \nsee that you have typed in the correct page and try again.");
+                catch(IOException a){
+                    textArea.setText("Unable to connect to internet, please check your connection\nand try again");
                 }
           	}
         }
