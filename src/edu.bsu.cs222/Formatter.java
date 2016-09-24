@@ -37,7 +37,7 @@ public class Formatter {
 					+ ".\n\tcomment:\t" + revision.getComment() + "\n\n";
 			return revString;
 		} catch(NullPointerException e) {
-			return "Null Revision Error";
+			return "";
 		}
 	}
 
