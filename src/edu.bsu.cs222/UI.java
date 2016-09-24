@@ -27,14 +27,12 @@ public class UI extends Application {
 
 	private Query query;
     private TextField wikiTextEntry;
-    //private JFrame frame;
     private Button submitButton, switchButton;
     private Text statusText, redirectText, sceneTitle;
     private Label label;
 	private StackPane userWindow;
     private ObservableList<Revision> data = FXCollections.observableArrayList();
     private ListView listview;
-    //private RevisionList revisions;
     private Revision selectedItem;
     private VBox outputBox;
     private Formatter formatter;
@@ -126,20 +124,12 @@ public class UI extends Application {
             setRedirectText(formatter.getQueryRedirect());
             setRevisionData(query);
             submitButton.setDisable(true);
-            switchButton.setText("Show user");
+            switchButton.setVisible(true);
             userWindow.setVisible(true);
         }
         if(e.getSource()== switchButton){
-
-            if (query.getSorting().equals("Title")) {
-                switchToUser();
-                switchButton.setText("Show page");
-                switchButton.setDisable(true);
-            } else {
-                switchToTitle();
-                switchButton.setText("Show user");
-            }
-
+            switchToUser();
+            switchButton.setDisable(true);
         }
 
         listview.setCellFactory(new Callback<ListView<Revision>,
@@ -193,7 +183,7 @@ public class UI extends Application {
         this.redirectText.setText( redirectText );
     }
 
-    static class TextCell extends ListCell<Revision> {
+    private static class TextCell extends ListCell<Revision> {
         @Override
         public void updateItem(Revision item, boolean empty) {
             super.updateItem(item, empty);
