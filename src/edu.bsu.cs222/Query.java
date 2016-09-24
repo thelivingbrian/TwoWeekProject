@@ -1,5 +1,6 @@
 package edu.bsu.cs222;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class Query {
@@ -7,13 +8,20 @@ public class Query {
 	private boolean wasSuccessful, redirectStatus;
 	private WikiPageData wikiPage;
 
-	private Query(QueryBuilder builder) {
+	private Query(QueryBuilder builder){
 		this.sorting = builder.sorting;
 		this.queryTitle = builder.queryTitle;
 		this.wasSuccessful = builder.wasSuccessful;
 		this.wikiPage = builder.wikiPage;
-		this.title = wikiPage.pageTitle();
-		this.redirectStatus = wikiPage.checkRedirect();
+		try {
+			this.title = wikiPage.pageTitle();
+			this.redirectStatus = wikiPage.checkRedirect();
+		}
+		catch(NullPointerException e){
+			this.title = "Unable to connect to internet, please try again";
+			this.redirectStatus = false;
+		}
+
 	}
 
 	public boolean wasSuccessful() { return this.wasSuccessful; }
@@ -52,10 +60,19 @@ public class Query {
 			revPage();
 			return this;
 		}
+
 		private void revPage() {
-			WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
-			this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiRevisions().build();
-			this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+			try {
+				WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
+				this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiRevisions().build();
+				this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+			}
+			catch(IOException e){
+				this.wasSuccessful = false;
+			}
+			catch(NullPointerException e){
+				this.wasSuccessful = false;
+			}
 		}
 
 		public QueryBuilder userQuery() {
@@ -68,10 +85,19 @@ public class Query {
 			userPage();
 			return this;
 		}
+
 		public void userPage() {
-			WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
-			this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiUser().build();
-			this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+			try {
+				WikipediaConnection wikiConnection = new WikipediaConnection(wikiURL);
+				this.wikiPage = new WikiPageData.WikiPageBuilder(wikiConnection.getXML()).wikiUser().build();
+				this.wasSuccessful = (wikiPage.getNumOfRevs() > 0);
+			}
+			catch(IOException e){
+				this.wasSuccessful = false;
+			}
+			catch(NullPointerException e){
+				this.wasSuccessful = false;
+			}
 		}
 
 		public Query build() {

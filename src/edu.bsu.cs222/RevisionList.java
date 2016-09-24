@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class RevisionList {
+public class RevisionList{
     private final int REVISIONS_WANTED = 10;
     private int numOfRevs;
     private Revision[] setOfRevisions;

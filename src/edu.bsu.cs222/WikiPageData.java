@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.IOException;
 import java.util.List;
 
 public class WikiPageData {
@@ -32,6 +33,7 @@ public class WikiPageData {
 		} catch(NullPointerException e) {
 			return "Page title is invalid";
 		}
+
 	}
 	
 	public int getNumOfRevs(){ return revisionList.size(); }
@@ -49,7 +51,8 @@ public class WikiPageData {
 		public WikiPageBuilder(Document wikiXML) {
 			this.wikiXML = wikiXML;
 		}
-		public WikiPageBuilder wikiRevisions() {
+
+		public WikiPageBuilder wikiRevisions() throws NullPointerException, IOException {
 			//this.nodes = new RevisionList(wikiXML.getElementsByTagName("rev"));
 			this.nodes = wikiXML.getElementsByTagName("rev");
 			return this;

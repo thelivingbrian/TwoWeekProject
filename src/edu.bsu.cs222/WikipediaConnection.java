@@ -19,7 +19,7 @@ public class WikipediaConnection {
 	private Document XMLResults;
 	private WikiURL wikiURL;
 
-	public WikipediaConnection(WikiURL wikiURL) {
+	public WikipediaConnection(WikiURL wikiURL) throws IOException{
 		this.wikiURL = wikiURL;
 		try {
 			URLConnection connection = wikipediaConnection(wikiURL.getURL());

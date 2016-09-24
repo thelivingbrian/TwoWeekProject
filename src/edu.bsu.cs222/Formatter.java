@@ -15,7 +15,7 @@ public class Formatter {
 	}
 
 	private void queryFailed() {
-		this.queryRedirect = "A wikipedia page for that input could not be found.";
+		this.queryRedirect = "A wikipedia page for that input could not be found. \nPlease check that you have the right page name \nor see if you are connected to the internet and try again.";
 		this.queryResult = "INVALID INPUT";
 	}
 
