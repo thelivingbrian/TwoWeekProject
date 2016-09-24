@@ -24,7 +24,6 @@ import javax.swing.*;
 
 public class UI extends Application {
 
-
 	private Query query;
     private TextField wikiTextEntry;
     private Button submitButton, switchButton;
@@ -103,7 +102,6 @@ public class UI extends Application {
 
     private void enableSearch(KeyEvent e) {
         submitButton.setDisable(false);
-        //submitButton.requestFocus();
     }
 
     public void changeFocus(MouseEvent e) {
@@ -150,16 +148,6 @@ public class UI extends Application {
         setRedirectText("Showing revisions made by:  " + selectedItem.getAuthor() + ".");
         setRevisionData(requestedUser);
     }
-
-    private void switchToTitle() {
-        //formatter = new Formatter();
-        Query requestedPage = new Query.QueryBuilder(selectedItem.getTitle()).revQuery().build();
-        formatter.formatQuery(requestedPage);
-        setStatusText(formatter.getQueryResult());
-        setRedirectText(formatter.getQueryRedirect());
-        setRevisionData(requestedPage);
-    }
-
 
     public void clearData() {
         wikiTextEntry.setText("");
