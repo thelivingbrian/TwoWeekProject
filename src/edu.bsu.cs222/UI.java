@@ -121,8 +121,7 @@ public class UI extends Application {
             setStatusText(formatter.getQueryResult());
             setRedirectText(formatter.getQueryRedirect());
             setRevisionData(query);
-            submitButton.setDisable(true);
-            switchButton.setVisible(true);
+            switchButton.setDisable(true);
             userWindow.setVisible(true);
         }
         if(e.getSource()== switchButton){
