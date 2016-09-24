@@ -8,7 +8,7 @@ public class Query {
 	private boolean wasSuccessful, redirectStatus;
 	private WikiPageData wikiPage;
 
-	private Query(QueryBuilder builder){
+	Query(QueryBuilder builder){
 		this.sorting = builder.sorting;
 		this.queryTitle = builder.queryTitle;
 		this.wasSuccessful = builder.wasSuccessful;

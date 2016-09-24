@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 public class WikiURL {
     private String URL;
 
-    private WikiURL(WikiURLBuilder builder){
+    WikiURL(WikiURLBuilder builder){
         this.URL = builder.URL;
     }
 
