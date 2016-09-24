@@ -25,7 +25,7 @@ import javax.swing.*;
 public class UI extends Application {
 
 
-	//private Query query;
+	private Query query;
     private TextField wikiTextEntry;
     //private JFrame frame;
     private Button submitButton, switchButton;

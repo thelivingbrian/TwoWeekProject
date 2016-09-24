@@ -23,6 +23,10 @@ public class Revision {
 
 	public String getReadableTS() {	return wikiTS.getReadable(); }
 
+	public String getTitle(){
+		return "Title";
+	}
+
 
 	public static class RevisionBuilder {
 		private String author, comment;

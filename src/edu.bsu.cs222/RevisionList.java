@@ -46,5 +46,5 @@ public class RevisionList {
 
     public Revision revisionAtIndex(int index) { return setOfRevisions[index]; }
 
-    public int getNumOfRevs() { return numOfRevs; }
+    public int size() { return numOfRevs; }
 }

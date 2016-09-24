@@ -9,14 +9,13 @@ import java.util.List;
 
 public class WikiPageData {
 	private Document wikiDoc;
-	private List<Revision> revisionList;
-	//private RevisionList revisionList;
+	private List<Revision> revList;
+	private RevisionList revisionList;
 	
 	private WikiPageData(WikiPageBuilder builder) {
 		this.wikiDoc = builder.wikiXML;
-		For(Node node : builder.nodes) {
-
-		}
+		revisionList = new RevisionList( builder.nodes );
+		//For(Node node : builder.nodes) {}
 	}
 
 	public Boolean checkRedirect(){
@@ -37,7 +36,7 @@ public class WikiPageData {
 	
 	public int getNumOfRevs(){ return revisionList.size(); }
 
-	public List getRevisionList() {
+	public RevisionList getRevisionList() {
 		return revisionList;
 	}
 
@@ -45,16 +44,18 @@ public class WikiPageData {
 	public static class WikiPageBuilder {
 		private Document wikiXML;
 		private NodeList nodes;
+		//private revisionList
 
 		public WikiPageBuilder(Document wikiXML) {
 			this.wikiXML = wikiXML;
 		}
 		public WikiPageBuilder wikiRevisions() {
-			this.nodes = new RevisionList(wikiXML.getElementsByTagName("rev"));
+			//this.nodes = new RevisionList(wikiXML.getElementsByTagName("rev"));
+			this.nodes = wikiXML.getElementsByTagName("rev");
 			return this;
 		}
 		public WikiPageBuilder wikiUser() {
-			this.nodes = new RevisionList(wikiXML.getElementsByTagName("item"));
+			nodes = wikiXML.getElementsByTagName("item");
 			return this;
 		}
 		public WikiPageData build(){
